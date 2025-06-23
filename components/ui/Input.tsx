@@ -13,37 +13,41 @@ interface InputProps extends TextInputProps {
 export const Input = React.forwardRef<TextInput, InputProps>(
   ({ className, label, error, leftIcon, rightIcon, isLoading, ...props }, ref) => {
     return (
-      <View className="w-full space-y-2">
-        {label && <Text className="text-sm font-medium text-text-primary">{label}</Text>}
+      <View className="w-full space-y-3">
+        {label && <Text className="text-text-primary text-base font-medium">{label}</Text>}
         <View className="relative">
           {leftIcon && (
-            <View className="absolute bottom-0 left-3 top-0 z-10 justify-center">{leftIcon}</View>
+            <View className="absolute bottom-0 left-4 top-0 z-10 justify-center">{leftIcon}</View>
           )}
           <TextInput
             ref={ref}
+            autoCapitalize="none"
+            autoComplete="off"
             className={cn(
-              'w-full rounded-xl bg-secondary px-4 py-3 text-text-primary',
-              'border border-secondary-light focus:border-primary',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
-              error && 'border-red focus:border-red',
+              'w-full rounded-2xl bg-surface px-6 py-4 text-lg text-textPrimary',
+              'border-2 border-border focus:border-primary',
+              'shadow-sm',
+              leftIcon && 'pl-14',
+              rightIcon && 'pr-14',
+              error && 'border-red-500 focus:border-red-500',
               isLoading && 'opacity-50',
               className
             )}
-            placeholderTextColor="#666"
+            placeholderTextColor="#A0A0A0"
             editable={!isLoading}
+            style={{ fontSize: 18, lineHeight: 22 }}
             {...props}
           />
           {rightIcon && (
-            <View className="absolute bottom-0 right-3 top-0 z-10 justify-center">{rightIcon}</View>
+            <View className="absolute bottom-0 right-4 top-0 z-10 justify-center">{rightIcon}</View>
           )}
           {isLoading && (
-            <View className="absolute bottom-0 right-3 top-0 z-10 justify-center">
-              <ActivityIndicator color="#DAFF00" />
+            <View className="absolute bottom-0 right-4 top-0 z-10 justify-center">
+              <ActivityIndicator color="#3B82F6" size="small" />
             </View>
           )}
         </View>
-        {error && <Text className="text-sm text-red">{error}</Text>}
+        {error && <Text className="text-base font-medium text-red-500">{error}</Text>}
       </View>
     );
   }

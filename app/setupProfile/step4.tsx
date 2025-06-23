@@ -1,31 +1,57 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useProfileSetup } from 'providers/ProfileSetupContext';
+import { useProfileSetup } from '@/providers/ProfileSetupContext';
+import { AvoidKeyBoardView } from '@/components/ui';
 
-export default function Step4() {
-  const [birthday, setBirthday] = useState('');
+const bodyTypes = [
+  { id: 'slim', label: 'Slim' },
+  { id: 'standard', label: 'Standard' },
+  { id: 'muscle', label: 'Athletic' },
+  { id: 'plus', label: 'Plus Size' },
+];
+
+export default function SetBodyForm() {
+  const [bodyForm, setBodyForm] = useState<string | null>(null);
   const router = useRouter();
-  const { currentStep, profileData } = useProfileSetup();
-  console.log('currentStep', currentStep);
-  console.log('profileData', profileData);
+  const { profileData, updateProfileData, setCurrentStep } = useProfileSetup();
+
+  const handleNext = () => {
+    if (bodyForm) {
+      updateProfileData({ bodyForm: bodyForm as 'muscle' | 'standard' | 'slim' | 'plus' });
+      router.push('/setupProfile/step5');
+    }
+  };
 
   return (
-    <View className="bg-bgDark flex-1 justify-center px-6">
-      <Text className="mb-8 text-3xl font-bold text-white">When is your birthday?</Text>
-      <TextInput
-        className="mb-6 rounded-xl bg-[#232323] px-4 py-3 text-lg text-white"
-        placeholder="YYYY-MM-DD"
-        placeholderTextColor="#aaa"
-        value={birthday}
-        onChangeText={setBirthday}
-      />
-      <TouchableOpacity
-        className={`items-center rounded-xl py-4 ${birthday ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'}`}
-        disabled={!birthday}
-        onPress={() => router.push('/setupProfile/step5')}>
-        <Text className="text-lg font-bold text-black">Next</Text>
-      </TouchableOpacity>
-    </View>
+    <AvoidKeyBoardView>
+      <View className="flex-1 justify-center bg-background px-6">
+        <Text className="mb-8 text-3xl font-bold text-white">Your body type</Text>
+        <View className="mb-8">
+          {bodyTypes.map((type) => (
+            <TouchableOpacity
+              key={type.id}
+              className={`mb-4 rounded-xl px-4 py-4 ${
+                bodyForm === type.id ? 'bg-[#f9c04a]' : 'bg-[#232323]'
+              }`}
+              onPress={() => setBodyForm(type.id)}
+              activeOpacity={0.8}>
+              <Text
+                className={`text-lg font-bold ${
+                  bodyForm === type.id ? 'text-black' : 'text-white'
+                }`}>
+                {type.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <TouchableOpacity
+          className={`items-center rounded-xl py-4 ${bodyForm ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'}`}
+          disabled={!bodyForm}
+          onPress={handleNext}>
+          <Text className="text-lg font-bold text-black">Next</Text>
+        </TouchableOpacity>
+      </View>
+    </AvoidKeyBoardView>
   );
 }

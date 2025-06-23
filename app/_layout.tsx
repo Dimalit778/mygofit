@@ -5,25 +5,35 @@ import { StatusBar } from 'expo-status-bar';
 import { getClerk } from '@/utils/getClerk';
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { SupabaseProvider } from '@/providers/SupabaseProvider';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '/(auth)',
+  initialRouteName: '/setupProfile',
 };
 const InitialLayout = () => {
+  const showSetupProfile = true;
+  const user = true;
   const pathname = usePathname();
-  console.log('pathname', pathname);
+  console.log(pathname);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="setupProfile" />
-      </Stack>
+      <SafeAreaProvider>
+        <StatusBar style="light" />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Protected guard={!user}>
+            <Stack.Screen name="(auth)" />
+          </Stack.Protected>
+          <Stack.Protected guard={user && showSetupProfile}>
+            <Stack.Screen name="(tabs)" />
+          </Stack.Protected>
+          <Stack.Protected guard={user && !showSetupProfile}>
+            <Stack.Screen name="setupProfile" />
+          </Stack.Protected>
+        </Stack>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 };

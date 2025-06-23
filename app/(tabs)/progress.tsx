@@ -1,8 +1,8 @@
+import { SafeView } from '@/components/ui/SafeView';
 import React from 'react';
-import { View, Text, ScrollView, SafeAreaView } from 'react-native';
-import Card from '../../components/ui/Card';
+import { View, Text, ScrollView } from 'react-native';
 
-export default function ProgressScreen() {
+export default function Progress() {
   const weeklyStats = [
     { day: 'Mon', completed: 5, total: 6 },
     { day: 'Tue', completed: 4, total: 6 },
@@ -14,7 +14,7 @@ export default function ProgressScreen() {
   ];
 
   return (
-    <SafeAreaView className="bg-primary-dark flex-1">
+    <SafeView>
       <ScrollView className="flex-1 px-4">
         <View className="py-6">
           <Text className="text-text-primary text-2xl font-bold">Your Progress</Text>
@@ -22,14 +22,14 @@ export default function ProgressScreen() {
         </View>
 
         {/* Weekly Overview */}
-        <Card className="mb-6">
+        <View className="mb-6">
           <Text className="text-text-primary mb-4 text-lg font-semibold">Weekly Overview</Text>
           <View className="h-40 flex-row justify-between">
             {weeklyStats.map((stat, index) => (
               <View key={stat.day} className="items-center">
                 <View className="w-8 flex-1 justify-end">
                   <View
-                    className="bg-primary w-full rounded-t-md"
+                    className="w-full rounded-t-md bg-primary"
                     style={{
                       height: `${(stat.completed / stat.total) * 100}%`,
                     }}
@@ -39,22 +39,22 @@ export default function ProgressScreen() {
               </View>
             ))}
           </View>
-        </Card>
+        </View>
 
         {/* Stats Cards */}
         <View className="mb-6 flex-row flex-wrap gap-4">
-          <Card className="flex-1">
+          <View className="flex-1">
             <Text className="text-text-secondary text-sm">Current Streak</Text>
-            <Text className="text-primary mt-1 text-2xl font-bold">7 Days</Text>
-          </Card>
-          <Card className="flex-1">
+            <Text className="mt-1 text-2xl font-bold text-primary">7 Days</Text>
+          </View>
+          <View className="flex-1">
             <Text className="text-text-secondary text-sm">Completion Rate</Text>
-            <Text className="text-primary mt-1 text-2xl font-bold">85%</Text>
-          </Card>
+            <Text className="mt-1 text-2xl font-bold text-primary">85%</Text>
+          </View>
         </View>
 
         {/* Monthly Stats */}
-        <Card className="mb-6">
+        <View className="mb-6">
           <Text className="text-text-primary mb-2 text-lg font-semibold">Monthly Stats</Text>
           <View className="space-y-4">
             <View>
@@ -63,7 +63,7 @@ export default function ProgressScreen() {
                 <Text className="text-text-primary">180</Text>
               </View>
               <View className="bg-secondary-light h-2 overflow-hidden rounded-full">
-                <View className="bg-primary h-full w-4/5 rounded-full" />
+                <View className="h-full w-4/5 rounded-full bg-primary" />
               </View>
             </View>
             <View>
@@ -72,12 +72,12 @@ export default function ProgressScreen() {
                 <Text className="text-text-primary">153</Text>
               </View>
               <View className="bg-secondary-light h-2 overflow-hidden rounded-full">
-                <View className="bg-primary h-full w-3/4 rounded-full" />
+                <View className="h-full w-3/4 rounded-full bg-primary" />
               </View>
             </View>
           </View>
-        </Card>
+        </View>
       </ScrollView>
-    </SafeAreaView>
+    </SafeView>
   );
 }

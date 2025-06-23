@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, SafeAreaView } from 'react-native';
-import { Card, Button } from '@/components/ui';
+import { View, Text, ScrollView } from 'react-native';
+import { Card, Button, SafeView } from '@/components/ui';
 
-export default function HomeScreen() {
+export default function Home() {
   const habits = [
     { id: 1, name: 'Morning Workout', time: '06:00 AM', completed: true },
     { id: 2, name: 'Drink Water', time: '10:00 AM', completed: false },
@@ -9,11 +9,11 @@ export default function HomeScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-primary-dark">
+    <SafeView>
       <ScrollView className="flex-1 px-4">
         <View className="py-6">
-          <Text className="text-2xl font-bold text-text-primary">Welcome back!</Text>
-          <Text className="mt-2 text-text-secondary">
+          <Text className="text-text-primary text-2xl font-bold">Welcome back!</Text>
+          <Text className="text-text-secondary mt-2">
             Track your daily habits and stay consistent
           </Text>
         </View>
@@ -21,7 +21,7 @@ export default function HomeScreen() {
         {/* Today's Progress */}
         <Card className="mb-6">
           <View className="items-center">
-            <Text className="mb-2 text-lg font-semibold text-text-primary">
+            <Text className="text-text-primary mb-2 text-lg font-semibold">
               Today&apos;s Progress
             </Text>
             <View className="mb-4 h-24 w-24 items-center justify-center rounded-full border-4 border-primary">
@@ -34,18 +34,16 @@ export default function HomeScreen() {
         {/* Today's Habits */}
         <View className="mb-6">
           <View className="mb-4 flex-row items-center justify-between">
-            <Text className="text-lg font-semibold text-text-primary">Today&apos;s Habits</Text>
-            <Button variant="ghost" size="sm">
-              See All
-            </Button>
+            <Text className="text-text-primary text-lg font-semibold">Today&apos;s Habits</Text>
+            <Button variant="ghost" size="sm" text="See All" />
           </View>
 
           {habits.map((habit) => (
             <Card key={habit.id} className="mb-3" onPress={() => {}}>
               <View className="flex-row items-center justify-between">
                 <View>
-                  <Text className="font-semibold text-text-primary">{habit.name}</Text>
-                  <Text className="mt-1 text-sm text-text-secondary">{habit.time}</Text>
+                  <Text className="text-text-primary font-semibold">{habit.name}</Text>
+                  <Text className="text-text-secondary mt-1 text-sm">{habit.time}</Text>
                 </View>
                 <View
                   className={`h-6 w-6 rounded-full border-2 ${
@@ -58,8 +56,10 @@ export default function HomeScreen() {
         </View>
 
         {/* Add New Habit Button */}
-        <Button className="mb-6">Create New Habit</Button>
+        <Button className="mb-6" text="Create New Habit">
+          Create New Habit
+        </Button>
       </ScrollView>
-    </SafeAreaView>
+    </SafeView>
   );
 }

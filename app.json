@@ -9,10 +9,7 @@
       "output": "static",
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-web-browser"
-    ],
+    "plugins": ["expo-router", "expo-web-browser"],
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
@@ -25,9 +22,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.dimalit778.mygofit"
@@ -37,7 +32,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.dimalit778.mygofit"
+      "package": "com.dimalit778.mygofit",
+      "softwareKeyboardLayoutMode": "pan"
     }
   }
 }

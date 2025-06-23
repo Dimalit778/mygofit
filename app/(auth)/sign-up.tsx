@@ -1,7 +1,7 @@
 import { AuthScreen } from '@/screens/AuthScreen';
 
-const signUp = () => {
+const SignUp = () => {
   return <AuthScreen mode="signup" />;
 };
 
-export default signUp;
+export default SignUp;

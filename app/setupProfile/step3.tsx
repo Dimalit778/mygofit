@@ -1,39 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useProfileSetup } from 'providers/ProfileSetupContext';
+import { useProfileSetup } from '@/providers/ProfileSetupContext';
+import { Input, AvoidKeyBoardView } from '@/components/ui';
 
-const options = [{ label: 'Male' }, { label: 'Female' }, { label: 'Other' }];
-
-export default function Step3() {
-  const [selected, setSelected] = useState<string | null>(null);
+export default function SetHeightWeight() {
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
   const router = useRouter();
-  const { currentStep, profileData } = useProfileSetup();
-  console.log('currentStep', currentStep);
-  console.log('profileData', profileData);
+  const { profileData, updateProfileData, setCurrentStep } = useProfileSetup();
+
+  useEffect(() => {
+    setCurrentStep(3);
+    if (profileData.height) setHeight(String(profileData.height));
+    if (profileData.weight) setWeight(String(profileData.weight));
+  }, []);
+
+  const handleNext = () => {
+    if (height && weight) {
+      updateProfileData({
+        height: parseInt(height, 10),
+        weight: parseInt(weight, 10),
+      });
+      router.push('/setupProfile/step4');
+    }
+  };
+
   return (
-    <View className="bg-bgDark flex-1 justify-center px-6">
-      <Text className="mb-8 text-3xl font-bold text-white">Select your gender</Text>
-      <View className="mb-8">
-        {options.map((opt) => (
-          <TouchableOpacity
-            key={opt.label}
-            className={`mb-4 rounded-xl px-4 py-4 ${selected === opt.label ? 'bg-[#f9c04a]' : 'bg-[#232323]'}`}
-            onPress={() => setSelected(opt.label)}
-            activeOpacity={0.8}>
-            <Text
-              className={`text-lg font-bold ${selected === opt.label ? 'text-black' : 'text-white'}`}>
-              {opt.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+    <AvoidKeyBoardView>
+      <View className="flex-1 justify-center bg-background px-6">
+        <Text className="mb-8 text-3xl font-bold text-white">Your height and weight</Text>
+
+        <Input
+          placeholder="Height (cm)"
+          value={height}
+          onChangeText={setHeight}
+          keyboardType="numeric"
+          className="mb-6"
+        />
+
+        <Input
+          placeholder="Weight (kg)"
+          value={weight}
+          onChangeText={setWeight}
+          keyboardType="numeric"
+          className="mb-8"
+        />
+
+        <TouchableOpacity
+          className={`items-center rounded-xl py-4 ${
+            height && weight ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'
+          }`}
+          disabled={!height || !weight}
+          onPress={handleNext}>
+          <Text className="text-lg font-bold text-black">Next</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        className={`items-center rounded-xl py-4 ${selected ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'}`}
-        disabled={!selected}
-        onPress={() => router.push('/setupProfile/step4')}>
-        <Text className="text-lg font-bold text-black">Next</Text>
-      </TouchableOpacity>
-    </View>
+    </AvoidKeyBoardView>
   );
 }

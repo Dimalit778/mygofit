@@ -1,10 +1,19 @@
-import { KeyboardAvoidingView, Platform, TouchableOpacity, View, Text } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  TouchableOpacity,
+  View,
+  Text,
+  Pressable,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Input } from '@/components/ui';
+import { AvoidKeyBoardView, BackButton, Input } from '@/components/ui';
 import { AuthError } from '@/types/auth';
 import { useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 interface AuthFormValues {
   email: string;
@@ -17,9 +26,11 @@ interface AuthScreenProps {
 }
 
 export function AuthScreen({ mode }: AuthScreenProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(true);
   const router = useRouter();
   const [error, setError] = useState<AuthError | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const isLogin = mode === 'login';
 
@@ -90,22 +101,36 @@ export function AuthScreen({ mode }: AuthScreenProps) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      className="flex-1 bg-background p-8"
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 0}>
-      {/* Header */}
-      <View className="">
-        <Text className="text-teal-50">{isLogin ? 'Welcome Back' : 'Create Account'}</Text>
-        <Text className="text-gray text-4xl">
-          {isLogin ? 'Sign in to continue' : 'Sign up to get started'}
+    <AvoidKeyBoardView>
+      {/* Header Section with improved styling */}
+      <View className="flex-row items-center justify-between pb-8 pt-4">
+        <BackButton />
+        <View className="flex-row items-center">
+          <Ionicons name="fitness" size={28} color="#8AB4F8" />
+          <Text className="ml-2 text-lg font-bold text-primary">MyGoFit</Text>
+        </View>
+      </View>
+
+      {/* Welcome Header with better spacing and typography */}
+      <View className="mb-12 mt-3">
+        <Text className="text-3xl font-bold leading-tight text-textPrimary">
+          {isLogin ? 'Welcome Back! 👋' : 'Create Your Account ✨'}
+        </Text>
+        <Text className="mt-4 text-xl leading-relaxed text-textSecondary">
+          {isLogin
+            ? 'Ready to crush your fitness goals today?'
+            : 'Join thousands on their fitness journey'}
         </Text>
       </View>
-      {/* Form */}
-      <View className="gap-md bg-primary">
+
+      {/* Form Section with improved layout */}
+      <View className="flex-1">
         {error && (
-          <View className="mb-lg rounded-lg bg-red/10 p-md">
-            <Text className="text-center text-red">{error.message}</Text>
+          <View className="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
+            <View className="flex-row items-center">
+              <Ionicons name="alert-circle" size={20} color="#EF4444" />
+              <Text className="ml-2 flex-1 text-sm font-medium text-red-400">{error.message}</Text>
+            </View>
           </View>
         )}
 
@@ -114,10 +139,11 @@ export function AuthScreen({ mode }: AuthScreenProps) {
           validationSchema={validationSchema}
           onSubmit={handleSubmit}>
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched, isSubmitting }) => (
-            <View className="">
-              <View>
+            <View className="space-y-1">
+              {/* Email Input with icon */}
+              <View className="mb-6">
                 <Input
-                  placeholder="Email"
+                  placeholder="Enter your email"
                   value={values.email}
                   onChangeText={handleChange('email')}
                   onBlur={handleBlur('email')}
@@ -125,43 +151,83 @@ export function AuthScreen({ mode }: AuthScreenProps) {
                   autoCapitalize="none"
                   error={touched.email ? errors.email : undefined}
                   isLoading={isSubmitting}
+                  leftIcon={<Ionicons name="mail-outline" size={22} color="#8AB4F8" />}
+                  className="border-border bg-surface text-textPrimary"
                 />
               </View>
 
-              <View>
+              {/* Password Input with toggle visibility */}
+              <View className="mb-6">
                 <Input
-                  placeholder="Password"
+                  placeholder="Enter your password"
                   value={values.password}
                   onChangeText={handleChange('password')}
                   onBlur={handleBlur('password')}
-                  secureTextEntry
+                  secureTextEntry={!showPassword}
                   error={touched.password ? errors.password : undefined}
                   isLoading={isSubmitting}
+                  leftIcon={<Ionicons name="lock-closed-outline" size={22} color="#8AB4F8" />}
+                  rightIcon={
+                    <Pressable onPress={() => setShowPassword(!showPassword)}>
+                      <Ionicons
+                        name={showPassword ? 'eye-outline' : 'eye-off-outline'}
+                        size={22}
+                        color="#A0A0A0"
+                      />
+                    </Pressable>
+                  }
+                  className="border-border bg-surface text-textPrimary"
                 />
               </View>
 
+              {/* Confirm Password Input (only for signup) */}
               {!isLogin && (
-                <View>
+                <View className="mb-6">
                   <Input
-                    placeholder="Confirm Password"
+                    placeholder="Confirm your password"
                     value={values.confirmPassword}
                     onChangeText={handleChange('confirmPassword')}
                     onBlur={handleBlur('confirmPassword')}
-                    secureTextEntry
+                    secureTextEntry={!showConfirmPassword}
                     error={touched.confirmPassword ? errors.confirmPassword : undefined}
                     isLoading={isSubmitting}
+                    leftIcon={<Ionicons name="lock-closed-outline" size={22} color="#8AB4F8" />}
+                    rightIcon={
+                      <Pressable onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        <Ionicons
+                          name={showConfirmPassword ? 'eye-outline' : 'eye-off-outline'}
+                          size={22}
+                          color="#A0A0A0"
+                        />
+                      </Pressable>
+                    }
+                    className="border-border bg-surface text-textPrimary"
                   />
                 </View>
               )}
 
+              {/* Forgot Password (only for login) */}
+              {isLogin && (
+                <View className="mb-6 flex-row justify-end">
+                  <TouchableOpacity>
+                    <Text className="text-base font-medium text-primary">Forgot Password?</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Main Action Button */}
               <TouchableOpacity
-                className="rounded-lg bg-primary py-md"
+                className="mt-6 flex-row items-center justify-center rounded-2xl bg-primary px-6 py-6"
                 onPress={() => handleSubmit()}
-                disabled={!isLoaded || isSubmitting}>
-                <Text className="text-center text-lg font-semibold text-primary-dark">
+                disabled={!isLoaded || isSubmitting}
+                style={{
+                  opacity: !isLoaded || isSubmitting ? 0.7 : 1,
+                }}>
+                {isSubmitting && <Ionicons name="sync" size={20} color="white" className="mr-2" />}
+                <Text className="text-xl font-bold text-white">
                   {isSubmitting
                     ? isLogin
-                      ? 'Signing in...'
+                      ? 'Signing In...'
                       : 'Creating Account...'
                     : isLogin
                       ? 'Sign In'
@@ -172,32 +238,46 @@ export function AuthScreen({ mode }: AuthScreenProps) {
           )}
         </Formik>
 
+        {/* Social Login Section (only for login) */}
         {isLogin && (
-          <View className="mt-xl">
-            <View className="mb-lg flex-row items-center">
-              <View className="h-[1px] flex-1 bg-secondary" />
-              <Text className="mx-sm text-text-secondary">OR</Text>
-              <View className="h-[1px] flex-1 bg-secondary" />
+          <View className="mt-8">
+            <View className="mb-6 flex-row items-center">
+              <View className="h-px flex-1 bg-border" />
+              <Text className="mx-4 text-base font-medium text-textSecondary">OR</Text>
+              <View className="h-px flex-1 bg-border" />
             </View>
 
             <TouchableOpacity
-              className="flex-row items-center justify-center rounded-lg bg-secondary p-md"
-              onPress={handleGoogleSignIn}>
-              {/* <Image source={require('@/assets/icon.png')} className="mr-sm h-[24px] w-[24px]" /> */}
-              <Text className="text-lg font-semibold text-text-primary">Continue with Google</Text>
+              className="flex-row items-center justify-center rounded-2xl border-2 border-border bg-surface px-6 py-5"
+              onPress={handleGoogleSignIn}
+              style={{
+                elevation: 2,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+              }}>
+              <Ionicons name="logo-google" size={24} color="#DB4437" />
+              <Text className="ml-3 text-lg font-semibold text-textPrimary">
+                Continue with Google
+              </Text>
             </TouchableOpacity>
           </View>
         )}
 
-        <View className=" flex-row justify-center">
-          <Text className="text-text-secondary">
+        {/* Bottom Navigation */}
+        <View className="mb-4 mt-8 flex-row items-center justify-center">
+          <Text className="text-lg text-textSecondary">
             {isLogin ? "Don't have an account? " : 'Already have an account? '}
           </Text>
           <TouchableOpacity onPress={() => router.push(isLogin ? '/sign-up' : '/login')}>
-            <Text className="font-semibold text-primary">{isLogin ? 'Sign Up' : 'Sign In'}</Text>
+            <Text className="text-lg font-bold text-primary">
+              {isLogin ? 'Sign Up' : 'Sign In'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
-    </KeyboardAvoidingView>
+    </AvoidKeyBoardView>
+    // </View>
   );
 }
