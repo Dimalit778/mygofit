@@ -1,16 +1,19 @@
 import { View, StyleSheet } from 'react-native';
 import TabButton from './TabButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type TabBarProps = {
   state: any;
   descriptors: any;
   navigation: any;
-  tabBarHeight: number;
 };
 
-export default function TabBar({ state, descriptors, navigation, tabBarHeight }: TabBarProps) {
+export default function TabBar({ state, descriptors, navigation }: TabBarProps) {
+  const insets = useSafeAreaInsets();
+  console.log('insets', insets);
+
   return (
-    <View style={[styles.tabBar, { bottom: tabBarHeight }]}>
+    <View style={[styles.tabBar, { bottom: insets.bottom }]}>
       {/* Tab buttons */}
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];

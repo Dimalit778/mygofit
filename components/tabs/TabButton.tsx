@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
-import { tabIcons } from './tabsIcons';
+import { ChartBar, GearSix, House, UserCircle } from 'phosphor-react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -15,8 +15,14 @@ type TabButtonProps = {
   onPress: () => void;
   color: string;
 };
+const tabIcons = {
+  index: (props: any) => <House name="House" {...props} />,
+  progress: (props: any) => <ChartBar name="ChartBar" {...props} />,
+  profile: (props: any) => <UserCircle name="UserCircle" {...props} />,
+  workouts: (props: any) => <GearSix name="GearSix" {...props} />,
+};
 
-export default function TabButton({ routeName, isFocused, label, onPress }: TabButtonProps) {
+export default function TabButton({ routeName, isFocused, label, onPress, color }: TabButtonProps) {
   const animationValue = useSharedValue(0);
 
   useEffect(() => {
