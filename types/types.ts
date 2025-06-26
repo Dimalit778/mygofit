@@ -3,7 +3,7 @@
 export type GenderType = 'male' | 'female';
 export type BodyType = 'skinny' | 'average' | 'muscular' | 'overweight';
 export type ActivityType = 'not active' | 'active' | 'very_active';
-export type GoalType = 'lose_weight' | 'keep_fit' | 'gain_weight' | 'gain_muscle';
+export type GoalType = 'lose_weight' | 'keep_fit' | 'gain_weight' | 'build_muscle';
 
 export type ProfileType = {
   first_name?: string;
@@ -36,10 +36,11 @@ export type ProfileSetupContextType = {
   currentStep: number;
   nextStep: () => void;
   prevStep: () => void;
+  totalSteps: number;
   profileData: ProfileType;
   updateProfileData: (data: Partial<ProfileType>) => void;
-  saveProfile: () => Promise<void>;
-  goToReview: () => void;
+  saveProfile: () => Promise<{ success: boolean; error?: string }>;
+  error: string | null;
 };
 export interface LoginFormValues {
   email: string;

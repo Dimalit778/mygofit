@@ -140,6 +140,8 @@ const SignUp = () => {
                     onBlur={handleBlur('email')}
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    autoComplete="email"
+                    textContentType="emailAddress"
                     error={touched.email ? errors.email : undefined}
                     isLoading={isSubmitting}
                     leftIcon={<Ionicons name="mail-outline" size={22} color="#8AB4F8" />}
@@ -155,7 +157,8 @@ const SignUp = () => {
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
                     secureTextEntry={!showPassword}
-                    autoComplete="password"
+                    autoComplete="off"
+                    textContentType="none"
                     error={touched.password ? errors.password : undefined}
                     isLoading={isSubmitting}
                     leftIcon={<Ionicons name="lock-closed-outline" size={22} color="#8AB4F8" />}
@@ -180,7 +183,8 @@ const SignUp = () => {
                     value={values.confirmPassword}
                     onChangeText={handleChange('confirmPassword')}
                     onBlur={handleBlur('confirmPassword')}
-                    autoComplete="password"
+                    autoComplete="off"
+                    textContentType="none"
                     secureTextEntry={!showConfirmPassword}
                     error={touched.confirmPassword ? errors.confirmPassword : undefined}
                     isLoading={isSubmitting}

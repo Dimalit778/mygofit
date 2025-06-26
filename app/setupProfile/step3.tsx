@@ -1,33 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
-import { Input, AvoidKeyBoardView } from '@/components/ui';
+import { Input, AvoidKeyBoardView, Button } from '@/components/ui';
+import { useRouter } from 'expo-router';
 
 export default function SetHeightWeight() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const { updateProfileData, nextStep, profileData } = useProfileSetup();
   const router = useRouter();
-  const { profileData, updateProfileData, setCurrentStep } = useProfileSetup();
-
   useEffect(() => {
-    setCurrentStep(3);
-    if (profileData.height) setHeight(String(profileData.height));
-    if (profileData.weight) setWeight(String(profileData.weight));
-  }, []);
+    if (profileData.height) {
+      setHeight(profileData.height.toString());
+    }
+    if (profileData.weight) {
+      setWeight(profileData.weight.toString());
+    }
+  }, [profileData]);
 
   const handleNext = () => {
     if (height && weight) {
       updateProfileData({
-        height: parseInt(height, 10),
-        weight: parseInt(weight, 10),
+        height: Number(height),
+        weight: Number(weight),
       });
+      nextStep();
       router.push('/setupProfile/step4');
     }
   };
 
   return (
-    <AvoidKeyBoardView>
+    <AvoidKeyBoardView className="px-6">
       <View className="flex-1 justify-center bg-background px-6">
         <Text className="mb-8 text-3xl font-bold text-white">Your height and weight</Text>
 
@@ -47,14 +50,7 @@ export default function SetHeightWeight() {
           className="mb-8"
         />
 
-        <TouchableOpacity
-          className={`items-center rounded-xl py-4 ${
-            height && weight ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'
-          }`}
-          disabled={!height || !weight}
-          onPress={handleNext}>
-          <Text className="text-lg font-bold text-black">Next</Text>
-        </TouchableOpacity>
+        <Button text="Next" onPress={handleNext} className="mt-6" disabled={!height || !weight} />
       </View>
     </AvoidKeyBoardView>
   );

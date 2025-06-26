@@ -1,5 +1,5 @@
 import '../global.css';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack, usePathname } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { getClerk } from '@/utils/getClerk';
@@ -15,22 +15,20 @@ export const unstable_settings = {
   initialRouteName: '(auth)',
 };
 const InitialLayout = () => {
+  const pathname = usePathname();
+  console.log('pathname ---', pathname);
   const { isLoaded, isSignedIn } = useAuth();
-  const { profile } = useSupabase();
-
-  console.log('profile -----', profile);
+  const { profile, isLoadingUser } = useSupabase();
 
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && !isLoadingUser) {
       SplashScreen.hideAsync();
     }
-  }, [isLoaded]);
+  }, [isLoaded, isLoadingUser]);
 
-  if (!isLoaded) {
+  if (!isLoaded || isLoadingUser) {
     return null;
   }
-
-  console.log('isSignedIn', isSignedIn);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -43,10 +41,10 @@ const InitialLayout = () => {
           <Stack.Protected guard={!isSignedIn}>
             <Stack.Screen name="(auth)" />
           </Stack.Protected>
-          <Stack.Protected guard={profile && isSignedIn}>
+          <Stack.Protected guard={isSignedIn && profile !== null}>
             <Stack.Screen name="(tabs)" />
           </Stack.Protected>
-          <Stack.Protected guard={!profile && isSignedIn}>
+          <Stack.Protected guard={isSignedIn && profile === null}>
             <Stack.Screen name="setupProfile" />
           </Stack.Protected>
         </Stack>

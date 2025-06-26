@@ -1,11 +1,18 @@
 import React from 'react';
-import { Text, TouchableOpacity, TouchableOpacityProps, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+} from 'react-native';
 
 interface ButtonProps extends TouchableOpacityProps {
   variant?: 'default' | 'outline' | 'ghost';
   size?: 'default' | 'lg' | 'sm';
   text: string;
   icon?: React.ReactNode;
+  loading?: boolean;
 }
 
 export const Button = ({
@@ -15,7 +22,7 @@ export const Button = ({
   icon,
   disabled = false,
   className = '',
-
+  loading = false,
   ...props
 }: ButtonProps) => {
   const variantClasses = {
@@ -40,9 +47,13 @@ export const Button = ({
     <TouchableOpacity
       className={`flex-row items-center justify-center rounded-full ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${disabled ? 'opacity-50' : ''}`}
       {...props}>
-      <Text className={`text-center text-base font-semibold ${textColorClasses[variant]}`}>
-        {text}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color="#000000" size="small" />
+      ) : (
+        <Text className={`text-center text-base font-semibold ${textColorClasses[variant]}`}>
+          {text}
+        </Text>
+      )}
 
       {/* Icon positioned after text */}
       {icon && <View className="ml-2">{icon}</View>}

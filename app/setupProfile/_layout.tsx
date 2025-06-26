@@ -1,14 +1,13 @@
 import { Stack } from 'expo-router';
 
-import { ProfileSetupProvider, useProfileSetup } from '@/providers/ProfileSetupContext';
-import { StepProgressBar, SafeView } from '@/components/ui';
+import { ProfileSetupProvider } from '@/providers/ProfileSetupContext';
+import { SafeView } from '@/components/ui';
+import StepProgressBar from '@/components/setupProfile/StepProgressBar';
 
 function SetupProfileLayoutContent() {
-  const { currentStep } = useProfileSetup();
-
   return (
-    <SafeView className="px-6 ">
-      <StepProgressBar currentStep={currentStep} totalSteps={5} />
+    <SafeView>
+      <StepProgressBar />
       <Stack screenOptions={{ headerShown: false }} />
     </SafeView>
   );

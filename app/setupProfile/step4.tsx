@@ -1,57 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
-import { AvoidKeyBoardView } from '@/components/ui';
+import { AvoidKeyBoardView, Button } from '@/components/ui';
+import { ActivityType } from '@/types/types';
+import { useRouter } from 'expo-router';
 
-const bodyTypes = [
-  { id: 'slim', label: 'Slim' },
-  { id: 'standard', label: 'Standard' },
-  { id: 'muscle', label: 'Athletic' },
-  { id: 'plus', label: 'Plus Size' },
+const activityTypes = [
+  { id: 'not_active', label: 'Not Active' },
+  { id: 'active', label: 'Active' },
+  { id: 'very_active', label: 'Very Active' },
 ];
 
-export default function SetBodyForm() {
-  const [bodyForm, setBodyForm] = useState<string | null>(null);
+export default function SetActivityLevel() {
+  const [activityLevel, setActivityLevel] = useState<string | null>(null);
+  const { updateProfileData, nextStep, profileData } = useProfileSetup();
   const router = useRouter();
-  const { profileData, updateProfileData, setCurrentStep } = useProfileSetup();
+  useEffect(() => {
+    if (profileData.activity) {
+      setActivityLevel(profileData.activity.replace(' ', '_'));
+    }
+  }, [profileData]);
 
   const handleNext = () => {
-    if (bodyForm) {
-      updateProfileData({ bodyForm: bodyForm as 'muscle' | 'standard' | 'slim' | 'plus' });
+    if (activityLevel) {
+      updateProfileData({ activity: activityLevel.replace('_', ' ') as ActivityType });
+      nextStep();
       router.push('/setupProfile/step5');
     }
   };
 
   return (
-    <AvoidKeyBoardView>
-      <View className="flex-1 justify-center bg-background px-6">
-        <Text className="mb-8 text-3xl font-bold text-white">Your body type</Text>
-        <View className="mb-8">
-          {bodyTypes.map((type) => (
-            <TouchableOpacity
-              key={type.id}
-              className={`mb-4 rounded-xl px-4 py-4 ${
-                bodyForm === type.id ? 'bg-[#f9c04a]' : 'bg-[#232323]'
-              }`}
-              onPress={() => setBodyForm(type.id)}
-              activeOpacity={0.8}>
-              <Text
-                className={`text-lg font-bold ${
-                  bodyForm === type.id ? 'text-black' : 'text-white'
-                }`}>
-                {type.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <TouchableOpacity
-          className={`items-center rounded-xl py-4 ${bodyForm ? 'bg-[#f9c04a]' : 'bg-[#f9c04a60]'}`}
-          disabled={!bodyForm}
-          onPress={handleNext}>
-          <Text className="text-lg font-bold text-black">Next</Text>
-        </TouchableOpacity>
+    <AvoidKeyBoardView className="px-6">
+      <Text className="mb-8 text-3xl font-bold text-white">How active are you?</Text>
+      <View className="mb-8">
+        {activityTypes.map((type) => (
+          <TouchableOpacity
+            key={type.id}
+            className={`mb-4 rounded-xl px-4 py-4 ${
+              activityLevel === type.id ? 'bg-[#f9c04a]' : 'bg-[#232323]'
+            }`}
+            onPress={() => setActivityLevel(type.id)}
+            activeOpacity={0.8}>
+            <Text
+              className={`text-lg font-bold ${
+                activityLevel === type.id ? 'text-black' : 'text-white'
+              }`}>
+              {type.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
+      <Button text="Next" onPress={handleNext} className="mt-6" disabled={!activityLevel} />
     </AvoidKeyBoardView>
   );
 }
