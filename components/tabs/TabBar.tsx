@@ -10,7 +10,6 @@ type TabBarProps = {
 
 export default function TabBar({ state, descriptors, navigation }: TabBarProps) {
   const insets = useSafeAreaInsets();
-  console.log('insets', insets);
 
   return (
     <View style={[styles.tabBar, { bottom: insets.bottom }]}>

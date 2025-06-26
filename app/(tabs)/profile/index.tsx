@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui';
 import Header from '@/components/Header';
 import { router } from 'expo-router';
-
+import { useAuth } from '@clerk/clerk-expo';
 export default function Profile() {
   const menuItems = [
     { title: 'Notification Settings', icon: '🔔', href: '/profile/notifications' },
@@ -14,8 +14,11 @@ export default function Profile() {
     { title: 'Help & Support', icon: '❓', href: '/profile/support' },
   ];
   const insets = useSafeAreaInsets();
+  const { signOut, isLoaded } = useAuth();
   const handleLogout = () => {
-    console.log('Logout');
+    if (isLoaded) {
+      signOut();
+    }
   };
   return (
     <SafeView>

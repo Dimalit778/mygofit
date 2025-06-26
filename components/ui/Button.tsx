@@ -13,7 +13,9 @@ export const Button = ({
   size = 'default',
   text,
   icon,
+  disabled = false,
   className = '',
+
   ...props
 }: ButtonProps) => {
   const variantClasses = {
@@ -36,7 +38,7 @@ export const Button = ({
 
   return (
     <TouchableOpacity
-      className={`flex-row items-center justify-center rounded-full ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      className={`flex-row items-center justify-center rounded-full ${variantClasses[variant]} ${sizeClasses[size]} ${className} ${disabled ? 'opacity-50' : ''}`}
       {...props}>
       <Text className={`text-center text-base font-semibold ${textColorClasses[variant]}`}>
         {text}

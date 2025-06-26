@@ -1,20 +1,37 @@
 import '../global.css';
-import { Stack, usePathname } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { getClerk } from '@/utils/getClerk';
-import { ClerkProvider } from '@clerk/clerk-expo';
-import { SupabaseProvider } from '@/providers/SupabaseProvider';
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { SupabaseProvider, useSupabase } from '@/providers/SupabaseProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  initialRouteName: '/setupProfile',
+  initialRouteName: '(auth)',
 };
 const InitialLayout = () => {
-  const showSetupProfile = true;
-  const user = true;
-  const pathname = usePathname();
-  console.log(pathname);
+  const { isLoaded, isSignedIn } = useAuth();
+  const { profile } = useSupabase();
+
+  console.log('profile -----', profile);
+
+  useEffect(() => {
+    if (isLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [isLoaded]);
+
+  if (!isLoaded) {
+    return null;
+  }
+
+  console.log('isSignedIn', isSignedIn);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
@@ -23,13 +40,13 @@ const InitialLayout = () => {
           screenOptions={{
             headerShown: false,
           }}>
-          <Stack.Protected guard={!user}>
+          <Stack.Protected guard={!isSignedIn}>
             <Stack.Screen name="(auth)" />
           </Stack.Protected>
-          <Stack.Protected guard={user && showSetupProfile}>
+          <Stack.Protected guard={profile && isSignedIn}>
             <Stack.Screen name="(tabs)" />
           </Stack.Protected>
-          <Stack.Protected guard={user && !showSetupProfile}>
+          <Stack.Protected guard={!profile && isSignedIn}>
             <Stack.Screen name="setupProfile" />
           </Stack.Protected>
         </Stack>

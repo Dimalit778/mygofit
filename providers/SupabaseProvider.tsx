@@ -1,48 +1,47 @@
 import { client } from '@/lib/supabase';
-import { Profile } from '@/types/dbTypes';
 import { useUser } from '@clerk/clerk-expo';
 import { createContext, useContext, useState } from 'react';
+import { ProfileType } from '@/types/types';
+
 const SupabaseContext = createContext<any>(null);
 export function useSupabase() {
   return useContext(SupabaseContext);
 }
 export const SupabaseProvider = ({ children }: any) => {
   const { user, isSignedIn } = useUser();
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<ProfileType | null>(null);
 
   const getProfile = async () => {
     try {
-      const { data, error } = await client
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-      console.log('SupabaseProvider --- data', data);
+      const { data, error } = await client.from('profiles').select('*').eq('id', user?.id).single();
       if (error) {
-        console.log('SupabaseProvider --- error', error);
+        console.error(error);
         setProfile(null);
-        return;
+        return null;
       }
       setProfile(data);
       return;
     } catch (error) {
-      console.log('SupabaseProvider --- Global error', error);
+      console.error(error);
       return null;
     }
   };
-  const createProfile = async (profile: any) => {
+  const createProfile = async (profile: ProfileType) => {
+    let newUser = {
+      ...profile,
+      id: user?.id,
+    };
     try {
-      const { data, error } = await client.from('profiles').insert(profile);
-      console.log('createProfile --- data', data);
+      const { data, error } = await client.from('profiles').insert(newUser);
       if (error) {
         console.error(error);
-        console.log('createProfile --- error', error);
         return null;
       }
+      getProfile();
       return data;
     } catch (error) {
       console.error(error);
-      console.log('createProfile --- Global error', error);
+
       return null;
     }
   };
