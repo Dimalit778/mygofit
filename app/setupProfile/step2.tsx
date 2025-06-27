@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
-import { AvoidKeyBoardView, Button, SafeView } from '@/components/ui';
+
 import { BodyType, GenderType } from '@/types/types';
 import { useRouter } from 'expo-router';
+import StepButtons from '@/components/setupProfile/StepButtons';
 
 const bodyTypes = [
   { id: 'skinny', label: 'Skinny' },
   { id: 'average', label: 'Average' },
   { id: 'muscular', label: 'Muscular' },
-  { id: 'overweight', label: 'Overweight' },
+  { id: 'Overweight', label: 'Overweight' },
 ];
 
-export default function SetGender() {
+export default function GenderAndBody() {
   const [gender, setGender] = useState<GenderType | null>(null);
   const [bodyForm, setBodyForm] = useState<BodyType | null>(null);
-  const { updateProfileData, nextStep, profileData } = useProfileSetup();
+  const { updateProfileData, nextStep, profileData, prevStep } = useProfileSetup();
   const router = useRouter();
   useEffect(() => {
     if (profileData.gender) {
@@ -35,7 +36,7 @@ export default function SetGender() {
   };
 
   return (
-    <AvoidKeyBoardView className="px-6">
+    <View className="flex-1 px-6 py-4">
       {/* Gender  */}
       <View>
         <Text className="mb-8 text-3xl font-bold text-white">What is your gender?</Text>
@@ -84,7 +85,15 @@ export default function SetGender() {
           ))}
         </View>
       </View>
-      <Button text="Next" onPress={handleNext} className="mt-6" disabled={!gender || !bodyForm} />
-    </AvoidKeyBoardView>
+      <View className="mb-10 mt-auto">
+        <StepButtons
+          onNext={handleNext}
+          nextText="Continue"
+          nextDisabled={!gender || !bodyForm}
+          onBack={() => prevStep()}
+          backText="Back"
+        />
+      </View>
+    </View>
   );
 }

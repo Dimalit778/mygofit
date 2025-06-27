@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
-import { Input, AvoidKeyBoardView, Button } from '@/components/ui';
+import { Input } from '@/components/ui';
 import { useRouter } from 'expo-router';
+import StepButtons from '@/components/setupProfile/StepButtons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-export default function SetHeightWeight() {
+export default function HeightAndWeight() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
-  const { updateProfileData, nextStep, profileData } = useProfileSetup();
+  const { updateProfileData, nextStep, profileData, prevStep } = useProfileSetup();
   const router = useRouter();
   useEffect(() => {
     if (profileData.height) {
@@ -30,8 +32,10 @@ export default function SetHeightWeight() {
   };
 
   return (
-    <AvoidKeyBoardView className="px-6">
-      <View className="flex-1 justify-center bg-background px-6">
+    <KeyboardAwareScrollView
+      style={{ backgroundColor: '#1A1A1A' }}
+      contentContainerStyle={{ flexGrow: 1 }}>
+      <View className="flex-1 px-6 py-4">
         <Text className="mb-8 text-3xl font-bold text-white">Your height and weight</Text>
 
         <Input
@@ -49,9 +53,16 @@ export default function SetHeightWeight() {
           keyboardType="numeric"
           className="mb-8"
         />
-
-        <Button text="Next" onPress={handleNext} className="mt-6" disabled={!height || !weight} />
+        <View className="mb-10 mt-auto">
+          <StepButtons
+            onNext={handleNext}
+            nextText="Continue"
+            nextDisabled={!height || !weight}
+            onBack={() => prevStep()}
+            backText="Back"
+          />
+        </View>
       </View>
-    </AvoidKeyBoardView>
+    </KeyboardAwareScrollView>
   );
 }

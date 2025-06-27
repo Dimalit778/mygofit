@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { SafeView } from '@/components/ui/SafeView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/ui';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 import { router } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
 export default function Profile() {

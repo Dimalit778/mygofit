@@ -15,7 +15,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Input, BackButton } from '@/components/ui';
+import { Input, BackButton, Button } from '@/components/ui';
 import { useSignIn } from '@clerk/clerk-expo';
 
 export default function LoginScreen() {
@@ -47,7 +47,6 @@ export default function LoginScreen() {
       });
       if (result.createdSessionId) {
         await setActive({ session: result.createdSessionId });
-        router.replace('/(tabs)');
       }
     } catch (err: any) {
       setError({
@@ -68,7 +67,7 @@ export default function LoginScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-background"
       style={{ paddingTop: top, paddingBottom: bottom }}>
-      <View className="">
+      <View className="px-6">
         <BackButton />
       </View>
       <ScrollView
@@ -132,7 +131,7 @@ export default function LoginScreen() {
                     placeholder="Enter your password"
                     value={values.password}
                     onChangeText={handleChange('password')}
-                    autoComplete="password"
+                    autoComplete="off"
                     onBlur={handleBlur('password')}
                     secureTextEntry={!showPassword}
                     error={touched.password ? errors.password : undefined}
@@ -157,20 +156,14 @@ export default function LoginScreen() {
                   </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity
-                  className="mt-6 flex-row items-center justify-center rounded-2xl bg-primary px-6 py-6"
+                <Button
+                  variant="default"
                   onPress={() => handleSubmit()}
                   disabled={!isLoaded || isSubmitting}
-                  style={{
-                    opacity: !isLoaded || isSubmitting ? 0.7 : 1,
-                  }}>
-                  {isSubmitting && (
-                    <Ionicons name="sync" size={20} color="white" className="mr-2" />
-                  )}
-                  <Text className="text-xl font-bold text-white">
-                    {isSubmitting ? 'Signing In...' : 'Sign In'}
-                  </Text>
-                </TouchableOpacity>
+                  loading={isSubmitting}
+                  text="Sign In"
+                  size="lg"
+                />
               </View>
             )}
           </Formik>

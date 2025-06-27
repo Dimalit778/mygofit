@@ -17,13 +17,19 @@ export const SupabaseProvider = ({ children }: any) => {
       const { data, error } = await client.from('profiles').select('*').eq('id', user?.id).single();
 
       if (error) {
-        console.error(error);
-        setProfile(null);
+        // PGRST116 means no rows found - this is normal for new users
+        if (error.code === 'PGRST116') {
+          console.log('No profile found for user - this is normal for new users');
+          setProfile(null);
+        } else {
+          console.error('Error fetching profile:', error);
+          setProfile(null);
+        }
       } else {
         setProfile(data);
       }
     } catch (error) {
-      console.error(error);
+      console.error('Unexpected error in getProfile:', error);
       setProfile(null);
     } finally {
       setIsLoadingUser(false);
@@ -42,22 +48,23 @@ export const SupabaseProvider = ({ children }: any) => {
   }, [isSignedIn, isLoaded, getProfile]);
 
   const createProfile = async (profile: ProfileType) => {
-    let newUser = {
-      ...profile,
-      id: user?.id,
-    };
     try {
-      const { data, error } = await client.from('profiles').insert(newUser);
+      const { data, error } = await client
+        .from('profiles')
+        .insert({
+          ...profile,
+          id: user?.id,
+        })
+        .single();
       if (error) {
-        console.error(error);
-        return null;
+        console.error('Profile creation error:', error);
+        return { success: false, error: error.message };
       }
-
-      return data;
+      await getProfile();
+      return { success: true, data };
     } catch (error) {
-      console.error(error);
-
-      return null;
+      console.error('Unexpected error:', error);
+      return { success: false, error: 'An unexpected error occurred' };
     }
   };
 

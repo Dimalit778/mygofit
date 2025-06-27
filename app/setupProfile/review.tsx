@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Alert } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
 import { useSupabase } from '@/providers/SupabaseProvider';
-import { Button } from '@/components/ui';
+import StepButtons from '@/components/setupProfile/StepButtons';
+import { UploadSimple } from 'phosphor-react-native';
 
 export default function Review() {
   const router = useRouter();
-  const { profileData, error } = useProfileSetup();
+  const { profileData, error, prevStep } = useProfileSetup();
   const { createProfile } = useSupabase();
   const [isLoading, setIsLoading] = useState(false);
+  console.log('profileData', profileData);
+
   const handleSubmit = async () => {
     setIsLoading(true);
-    const result = await createProfile(profileData);
-    if (result.success) {
-      console.log('result', result);
+    try {
+      await createProfile(profileData);
       router.replace('/(tabs)');
-    } else {
-      Alert.alert('Error', result.error || 'Failed to save profile. Please try again.', [
-        { text: 'OK' },
-      ]);
+    } catch (error) {
+      console.error('Error creating profile:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const formatBodyType = (type: string) => {
@@ -44,78 +45,157 @@ export default function Review() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
-
-  return (
-    <View className="flex-1 items-center justify-center bg-background px-6">
-      <Text className="mb-8 text-center text-3xl font-bold text-white">Review your profile</Text>
-
-      {profileData.image_url && (
-        <Image
-          source={{ uri: profileData.image_url }}
-          className="mb-4 rounded-full"
-          style={{ width: 100, height: 100 }}
-        />
-      )}
-
-      <View className="mb-8 w-full">
-        <Text className="mb-2 text-lg text-white">
-          Name:{' '}
-          <Text className="font-bold">
-            {profileData.first_name} {profileData.last_name}
-          </Text>
+  const PhysicalInformation = () => {
+    return (
+      <View className="rounded-xl bg-surface p-4">
+        <Text className="text-secondary mb-4 text-center text-xl font-bold">
+          Physical Information
         </Text>
 
-        {profileData.birth_date && (
-          <Text className="mb-2 text-lg text-white">
-            Age:{' '}
-            <Text className="font-bold">
-              {new Date().getFullYear() - new Date(profileData.birth_date).getFullYear()} years
+        <View className="gap-1">
+          {/* Height */}
+          <View className="flex-row justify-between">
+            <Text className="text-base text-textSecondary">Height</Text>
+            <Text className="text-base font-semibold text-textPrimary">
+              {profileData.height} cm
             </Text>
-          </Text>
-        )}
+          </View>
 
-        {profileData.gender && (
-          <Text className="mb-2 text-lg text-white">
-            Gender:{' '}
-            <Text className="font-bold">{profileData.gender === 'male' ? 'Male' : 'Female'}</Text>
-          </Text>
-        )}
+          {/* Weight */}
+          <View className="flex-row justify-between">
+            <Text className="text-base text-textSecondary">Weight</Text>
+            <Text className="text-base font-semibold text-textPrimary">
+              {profileData.weight} kg
+            </Text>
+          </View>
 
-        {profileData.height && (
-          <Text className="mb-2 text-lg text-white">
-            Height: <Text className="font-bold">{profileData.height} cm</Text>
-          </Text>
-        )}
+          {/* Body Type */}
+          <View className="flex-row justify-between">
+            <Text className="text-base text-textSecondary">Body Type</Text>
+            <Text className="text-base font-semibold text-textPrimary">
+              {formatBodyType(profileData?.body || '')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
 
-        {profileData.weight && (
-          <Text className="mb-2 text-lg text-white">
-            Weight: <Text className="font-bold">{profileData.weight} kg</Text>
+  const PersonalInformation = () => {
+    return (
+      <View className="gap-4">
+        {/* Personal Information Card */}
+        <View className="rounded-xl bg-surface p-4">
+          <Text className="text-secondary mb-4 text-center text-xl font-bold">
+            Personal Information
           </Text>
-        )}
+          {/* Name */}
+          <View className="gap-2">
+            <View className="flex-row justify-between">
+              <Text className="text-base text-textSecondary">Name</Text>
+              <Text className="text-base font-semibold text-textPrimary">
+                {profileData.first_name} {profileData.last_name}
+              </Text>
+            </View>
 
-        {profileData.body && (
-          <Text className="mb-2 text-lg text-white">
-            Body Type: <Text className="font-bold">{formatBodyType(profileData.body)}</Text>
-          </Text>
-        )}
+            <View className="flex-row justify-between">
+              <Text className="text-base text-textSecondary">Age</Text>
+              <Text className="text-base font-semibold text-textPrimary">
+                {new Date().getFullYear() - new Date(profileData.birth_date || '').getFullYear()}{' '}
+                years
+              </Text>
+            </View>
+            {/* Gender   */}
+            <View className="flex-row justify-between">
+              <Text className="text-base text-textSecondary">Gender</Text>
+              <Text className="text-base font-semibold text-textPrimary">
+                {profileData.gender === 'male' ? 'Male' : 'Female'}
+              </Text>
+            </View>
+            {/* Birth Date */}
+            <View className="flex-row justify-between">
+              <Text className="text-base text-textSecondary">Birth Date</Text>
+              <Text className="text-base font-semibold text-textPrimary">
+                {profileData.birth_date
+                  ? new Date(profileData.birth_date).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })
+                  : ''}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+  const FitnessInformation = () => {
+    return (
+      <View className="rounded-xl bg-surface p-4">
+        <Text className="text-secondary mb-4 text-center text-xl font-bold">
+          Fitness Information
+        </Text>
 
-        {profileData.activity && (
-          <Text className="mb-2 text-lg text-white">
-            Activity Level:{' '}
-            <Text className="font-bold">{formatActivityLevel(profileData.activity)}</Text>
-          </Text>
-        )}
+        <View className="gap-1">
+          {/* Activity Level */}
+          <View className="flex-row justify-between">
+            <Text className="text-base text-textSecondary">Activity Level</Text>
+            <Text className="text-base font-semibold text-textPrimary">
+              {formatActivityLevel(profileData?.activity || '')}
+            </Text>
+          </View>
 
-        {profileData.goal && (
-          <Text className="mb-2 text-lg text-white">
-            Goal: <Text className="font-bold">{formatGoal(profileData.goal)}</Text>
-          </Text>
+          {/* Goal */}
+          <View className="flex-row justify-between">
+            <Text className="text-base text-textSecondary">Goal</Text>
+            <Text className="text-base font-semibold text-textPrimary">
+              {formatGoal(profileData?.goal || '')}
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+  const ProfileImage = () => {
+    return (
+      <View className="items-center">
+        {profileData.image_url ? (
+          <Image
+            source={{ uri: profileData.image_url }}
+            className="rounded-full border-4 border-border"
+            style={{ width: 120, height: 120 }}
+          />
+        ) : (
+          <View className="mt-4 flex h-28 w-28 items-center justify-center rounded-full border-4 border-border bg-surface">
+            <UploadSimple size={32} color="#8AB4F8" />
+          </View>
         )}
       </View>
+    );
+  };
 
-      {error && <Text className="mb-4 text-center text-red-500">{error}</Text>}
+  return (
+    <View className="flex-1 gap-4 px-6">
+      <ProfileImage />
+      <PersonalInformation />
+      <PhysicalInformation />
+      <FitnessInformation />
+      {error && (
+        <View className="mb-4 rounded-lg bg-red-500/10 p-4">
+          <Text className="text-center text-red-500">{error}</Text>
+        </View>
+      )}
 
-      <Button text="Complete Setup" onPress={handleSubmit} loading={isLoading} className="mt-6" />
+      <View className="my-auto">
+        <StepButtons
+          onNext={handleSubmit}
+          nextText={isLoading ? 'Creating Profile...' : 'Complete Setup'}
+          nextDisabled={isLoading}
+          onBack={() => prevStep()}
+          backText="Back"
+        />
+      </View>
     </View>
   );
 }

@@ -1,7 +1,7 @@
 import { View, Text, Switch } from 'react-native';
 import React, { useState } from 'react';
 import { SafeView } from '@/components/ui/SafeView';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButton } from '@/components/ui';
 
@@ -24,7 +24,7 @@ export default function Notifications() {
   return (
     <SafeView>
       <View className="flex-1 px-4" style={{ paddingBottom: insets.bottom + 15 }}>
-        <Header title="Notifications" leftIcon={<BackButton />} />
+        <Header title="Notifications" left={<BackButton />} />
 
         <View className="mt-6 space-y-6">
           {/* Main notification toggle */}

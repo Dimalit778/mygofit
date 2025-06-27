@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeView } from '@/components/ui/SafeView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 import { useLocalSearchParams } from 'expo-router';
 
 import { Exercise } from '@/types/dbTypes';

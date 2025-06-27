@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { BackButton, Input } from '@/components/ui';
+import { BackButton, Button, Input } from '@/components/ui';
 import { useSignUp } from '@clerk/clerk-expo';
 
 const SignUp = () => {
@@ -87,7 +87,7 @@ const SignUp = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1 bg-background"
       style={{ paddingTop: top, paddingBottom: bottom }}>
-      <View className="">
+      <View className="px-6">
         <BackButton />
       </View>
       <ScrollView
@@ -157,7 +157,7 @@ const SignUp = () => {
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
                     secureTextEntry={!showPassword}
-                    autoComplete="off"
+                    autoComplete="password"
                     textContentType="none"
                     error={touched.password ? errors.password : undefined}
                     isLoading={isSubmitting}
@@ -202,21 +202,16 @@ const SignUp = () => {
                   />
                 </View>
 
-                {/* Main Action Button */}
-                <TouchableOpacity
-                  className="mt-6 flex-row items-center justify-center rounded-2xl bg-primary px-6 py-6"
-                  onPress={() => handleSubmit()}
-                  disabled={!isLoaded || isSubmitting}
-                  style={{
-                    opacity: !isLoaded || isSubmitting ? 0.7 : 1,
-                  }}>
-                  {isSubmitting && (
-                    <Ionicons name="sync" size={20} color="white" className="mr-2" />
-                  )}
-                  <Text className="text-xl font-bold text-white">
-                    {isSubmitting ? 'Creating Account...' : 'Create Account'}
-                  </Text>
-                </TouchableOpacity>
+                <View className="mt-6">
+                  <Button
+                    variant="default"
+                    onPress={() => handleSubmit()}
+                    disabled={!isLoaded || isSubmitting}
+                    loading={isSubmitting}
+                    text="Create Account"
+                    size="lg"
+                  />
+                </View>
               </View>
             )}
           </Formik>

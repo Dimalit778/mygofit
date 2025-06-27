@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { BackButton, SafeView } from '@/components/ui';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Settings() {

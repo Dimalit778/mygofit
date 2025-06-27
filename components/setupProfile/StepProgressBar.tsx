@@ -1,16 +1,16 @@
 import React from 'react';
 import { View } from 'react-native';
-import { BackButton } from '../ui';
 
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const StepProgressBar = () => {
-  const { currentStep, prevStep, totalSteps } = useProfileSetup();
+  const { currentStep, totalSteps } = useProfileSetup();
   const activeColor = '#F7F7F7';
   const inactiveColor = '#333333';
-
+  const insets = useSafeAreaInsets();
   return (
-    <View className="min-h-24 w-full gap-4 px-6">
+    <View className="bg-background px-6 py-8" style={{ paddingTop: insets.top + 10 }}>
       <View className="flex-row items-center justify-between gap-2">
         {Array.from({ length: totalSteps }).map((_, index) => {
           const stepNumber = index + 1;
@@ -27,9 +27,6 @@ const StepProgressBar = () => {
             </View>
           );
         })}
-      </View>
-      <View className="flex-row items-center justify-between">
-        <View>{currentStep > 1 && <BackButton onPress={() => prevStep()} />}</View>
       </View>
     </View>
   );

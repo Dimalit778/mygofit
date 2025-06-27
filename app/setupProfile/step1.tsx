@@ -2,9 +2,11 @@ import { useRouter } from 'expo-router';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
 import { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { Input, Button, AvoidKeyBoardView } from '@/components/ui';
+import { Input } from '@/components/ui';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import StepButtons from '@/components/setupProfile/StepButtons';
 
-export default function SetUserInfo() {
+export default function UserInfo() {
   const { updateProfileData, nextStep, profileData } = useProfileSetup();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -111,74 +113,76 @@ export default function SetUserInfo() {
   };
 
   return (
-    <AvoidKeyBoardView className="px-6 ">
-      <Text className="mb-4 text-3xl font-bold text-white">Welcome to MyGoFit</Text>
-      <Text className="mb-10 text-xl text-textSecondary">Let&apos;s get to know you better</Text>
-      <Text className="mb-2 text-sm font-medium text-textSecondary">First Name</Text>
-      <Input
-        placeholder="Enter your name"
-        value={firstName}
-        onChangeText={setFirstName}
-        className="mb-6"
-        autoCapitalize="words"
-      />
-      <Text className="mb-2 text-sm font-medium text-textSecondary">Last Name</Text>
-      <Input
-        placeholder="Enter your last name"
-        value={lastName}
-        onChangeText={setLastName}
-        className="mb-6"
-        autoCapitalize="words"
-      />
+    <KeyboardAwareScrollView
+      style={{ backgroundColor: '#1A1A1A' }}
+      contentContainerStyle={{ flexGrow: 1 }}>
+      <View className="flex-grow px-6 py-4">
+        <Text className="mb-4 text-3xl font-bold text-white">Welcome to MyGoFit</Text>
+        <Text className="mb-10 text-xl text-textSecondary">Let&apos;s get to know you better</Text>
+        <Text className="mb-2 text-sm font-medium text-textSecondary">First Name</Text>
+        <Input
+          placeholder="Enter your name"
+          value={firstName}
+          onChangeText={setFirstName}
+          className="mb-6"
+          autoCapitalize="words"
+        />
+        <Text className="mb-2 text-sm font-medium text-textSecondary">Last Name</Text>
+        <Input
+          placeholder="Enter your last name"
+          value={lastName}
+          onChangeText={setLastName}
+          className="mb-6"
+          autoCapitalize="words"
+        />
 
-      {/* Date of Birth Input */}
-      <View className="mb-6 mt-6 gap-2">
-        <Text className="mb-2 text-sm font-medium text-textSecondary">Date of Birth</Text>
-        <View className="flex-row items-center justify-center gap-2 ">
-          <View className="w-1/4 text-center">
-            <Input
-              placeholder="MM"
-              value={month}
-              onChangeText={handleMonthChange}
-              keyboardType="number-pad"
-              maxLength={2}
-              ref={monthInputRef}
-              autoFocus
-            />
-          </View>
-          <Text className="self-center text-xl text-white">/</Text>
-          <View className="w-1/4  text-center">
-            <Input
-              placeholder="DD"
-              value={day}
-              onChangeText={handleDayChange}
-              keyboardType="number-pad"
-              maxLength={2}
-              ref={dayInputRef}
-            />
-          </View>
-          <Text className="self-center text-xl text-white">/</Text>
-          <View className="w-1/4 ">
-            <Input
-              placeholder="YYYY"
-              value={year}
-              onChangeText={handleYearChange}
-              keyboardType="number-pad"
-              maxLength={4}
-              ref={yearInputRef}
-            />
+        {/* Date of Birth Input */}
+        <View className="mb-6 mt-6 gap-2">
+          <Text className="mb-2 text-sm font-medium text-textSecondary">Date of Birth</Text>
+          <View className="flex-row items-center justify-center gap-2 ">
+            <View className="w-1/4 text-center">
+              <Input
+                placeholder="MM"
+                value={month}
+                onChangeText={handleMonthChange}
+                keyboardType="number-pad"
+                maxLength={2}
+                ref={monthInputRef}
+                autoFocus={false}
+              />
+            </View>
+            <Text className="self-center text-xl text-white">/</Text>
+            <View className="w-1/4  text-center">
+              <Input
+                placeholder="DD"
+                value={day}
+                onChangeText={handleDayChange}
+                keyboardType="number-pad"
+                maxLength={2}
+                ref={dayInputRef}
+              />
+            </View>
+            <Text className="self-center text-xl text-white">/</Text>
+            <View className="w-1/4 ">
+              <Input
+                placeholder="YYYY"
+                value={year}
+                onChangeText={handleYearChange}
+                keyboardType="number-pad"
+                maxLength={4}
+                ref={yearInputRef}
+              />
+            </View>
           </View>
         </View>
+        <View className="mb-10 mt-auto">
+          <StepButtons
+            onNext={handleNext}
+            nextText="Continue"
+            nextDisabled={!firstName.trim() || !lastName.trim() || !birthDate}
+          />
+        </View>
       </View>
-
-      <Button
-        variant="default"
-        onPress={handleNext}
-        disabled={!firstName.trim() || !lastName.trim() || !birthDate}
-        className="mt-6"
-        text="Continue"
-        size="lg"
-      />
-    </AvoidKeyBoardView>
+    </KeyboardAwareScrollView>
   );
 }
