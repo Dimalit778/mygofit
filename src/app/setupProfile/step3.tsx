@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
-import { Input } from '@/components/ui';
+import { AvoidKeyBoardView, Input } from '@/components/ui';
 import { useRouter } from 'expo-router';
 import StepButtons from '@/components/setupProfile/StepButtons';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export default function HeightAndWeight() {
   const [height, setHeight] = useState('');
@@ -32,9 +31,7 @@ export default function HeightAndWeight() {
   };
 
   return (
-    <KeyboardAwareScrollView
-      style={{ backgroundColor: '#1A1A1A' }}
-      contentContainerStyle={{ flexGrow: 1 }}>
+    <AvoidKeyBoardView>
       <View className="flex-1 px-6 py-4">
         <Text className="mb-8 text-3xl font-bold text-white">Your height and weight</Text>
 
@@ -63,6 +60,6 @@ export default function HeightAndWeight() {
           />
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </AvoidKeyBoardView>
   );
 }

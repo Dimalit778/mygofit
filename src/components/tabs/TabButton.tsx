@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { useEffect } from 'react';
-import { ChartBar, GearSix, House, UserCircle } from 'phosphor-react-native';
+import { ChartBar, GearSix, House, PlayCircle, UserCircle } from 'phosphor-react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -20,6 +20,7 @@ const tabIcons = {
   progress: (props: any) => <ChartBar name="ChartBar" {...props} />,
   profile: (props: any) => <UserCircle name="UserCircle" {...props} />,
   workouts: (props: any) => <GearSix name="GearSix" {...props} />,
+  active: (props: any) => <PlayCircle name="PlayCircle" {...props} />,
 };
 
 export default function TabButton({ routeName, isFocused, label, onPress, color }: TabButtonProps) {

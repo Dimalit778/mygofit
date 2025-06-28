@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import { useProfileSetup } from '@/providers/ProfileSetupContext';
 import { useState, useRef, useEffect } from 'react';
 import { View, Text, TextInput } from 'react-native';
-import { Input } from '@/components/ui';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { AvoidKeyBoardView, Input } from '@/components/ui';
+
 import StepButtons from '@/components/setupProfile/StepButtons';
 
 export default function UserInfo() {
@@ -113,9 +113,7 @@ export default function UserInfo() {
   };
 
   return (
-    <KeyboardAwareScrollView
-      style={{ backgroundColor: '#1A1A1A' }}
-      contentContainerStyle={{ flexGrow: 1 }}>
+    <AvoidKeyBoardView>
       <View className="flex-grow px-6 py-4">
         <Text className="mb-4 text-3xl font-bold text-white">Welcome to MyGoFit</Text>
         <Text className="mb-10 text-xl text-textSecondary">Let&apos;s get to know you better</Text>
@@ -183,6 +181,6 @@ export default function UserInfo() {
           />
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </AvoidKeyBoardView>
   );
 }

@@ -12,12 +12,12 @@ export const AvoidKeyBoardView = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
       className="flex-1 bg-background">
-      {/* <ScrollView
+      <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}> */}
-      {children}
-      {/* </ScrollView> */}
+        showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

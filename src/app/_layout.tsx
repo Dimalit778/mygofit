@@ -5,9 +5,9 @@ import { StatusBar } from 'react-native';
 import { getClerk } from '@/utils/getClerk';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { SupabaseProvider, useSupabase } from '@/providers/SupabaseProvider';
+import { WorkoutProvider } from '@/providers/WorkoutProvider';
 import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect } from 'react';
-import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,7 +32,8 @@ const InitialLayout = () => {
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardProvider statusBarTranslucent>
+        {/* <KeyboardProvider statusBarTranslucent> */}
+        <WorkoutProvider>
           <StatusBar animated translucent barStyle={'light-content'} />
           <Stack
             screenOptions={{
@@ -51,7 +52,8 @@ const InitialLayout = () => {
               />
             </Stack.Protected>
           </Stack>
-        </KeyboardProvider>
+        </WorkoutProvider>
+        {/* </KeyboardProvider> */}
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
