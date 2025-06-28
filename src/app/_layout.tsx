@@ -1,4 +1,4 @@
-import '../global.css';
+import '../../global.css';
 import { SplashScreen, Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'react-native';
@@ -30,7 +30,7 @@ const InitialLayout = () => {
   }
 
   return (
-    <SafeAreaProvider initialMetrics={initialWindowMetrics} style={{ backgroundColor: '#1A1A1A' }}>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider statusBarTranslucent>
           <StatusBar animated translucent barStyle={'light-content'} />

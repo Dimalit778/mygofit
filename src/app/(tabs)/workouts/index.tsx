@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeView } from '@/components/ui';
-import { Exercise } from '@/types/dbTypes';
+
 import { getBodyPartsList, getExercisesByBodyPart } from '@/lib/api/exerciseApi';
 import ExerciseList from '@/components/workouts/ExerciseList';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,7 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function WorkoutsScreen() {
   const [bodyParts, setBodyParts] = useState<string[]>([]);
   const [selectedBodyPart, setSelectedBodyPart] = useState<string>('');
-  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [exercises, setExercises] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingBodyParts, setIsLoadingBodyParts] = useState(false);
   const insets = useSafeAreaInsets();

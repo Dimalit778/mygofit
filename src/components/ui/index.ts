@@ -6,3 +6,4 @@ export * from './AvoidKeyBoardView';
 
 export * from './SafeView';
 export * from './UserIcon';
+export * from './TabScreenWrapper';

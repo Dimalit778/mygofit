@@ -19,10 +19,10 @@ export type ProfileType = {
   goal?: GoalType;
 };
 export type ExerciseType = {
-  bodyPart: string;
-  equipment: string;
-  gifUrl: string;
-  id: string;
+  bodyPart?: string;
+  equipment?: string;
+  gifUrl?: string;
+  id?: string;
   name: string;
   target: string;
   secondaryMuscles: string[];
